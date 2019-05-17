@@ -1,0 +1,220 @@
+---
+title: "Comparison of Word Frequency across Variables"
+author: "Emma and LaAnna"
+date: "May 16, 2019"
+output: html_document
+---
+
+```{r setup, message= FALSE, warning=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+```{r load the data, echo=FALSE, warning=FALSE, message=FALSE}
+#install.packages("webshot")
+#install.packages("htmlwidgets")
+library(tm)
+library(SnowballC)
+library(wordcloud)
+library(wordcloud2)
+library(RColorBrewer)
+library(readr)
+library(webshot)
+library(htmlwidgets)
+
+metadata <- read_csv("metadata.csv", col_types = cols(
+  x = "i", # integer column
+  treatment = "c" # character column
+))
+```
+
+
+## Title Wordcloud and Frequency Histogram
+
+```{r title data cleaning, echo=FALSE, warning=FALSE}
+title <- metadata[,"Title"]
+title <- toString(title)
+title <- read_lines(title)
+docs_title <- Corpus(VectorSource(title))
+
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+docs_title <- tm_map(docs_title, toSpace, "/")
+docs_title <- tm_map(docs_title, toSpace, "@")
+docs_title <- tm_map(docs_title, toSpace, "\\|")
+
+# Remove numbers
+docs_title <- tm_map(docs_title, removeNumbers)
+# Remove punctuations
+docs_title <- tm_map(docs_title, removePunctuation)
+# Eliminate extra white spaces
+docs_title <- tm_map(docs_title, stripWhitespace)
+# Remove english common stopwords
+docs_title <- tm_map(docs_title, removeWords, stopwords("english"))
+
+dtm_title <- TermDocumentMatrix(docs_title)
+m_title <- as.matrix(dtm_title)
+v_title <- sort(rowSums(m_title),decreasing=TRUE)
+d_title <- data.frame(word = names(v_title),freq=v_title)
+
+title_word <- wordcloud2(d_title, size = 2, minSize = 3, color = c("red", "lightgrey", "black", "maroon")) + WCtheme(2)
+saveWidget(title_word, "tmp.html", selfcontained = F)
+webshot("tmp.html", "wc1.png", delay = 5, vwidth = 900, vheight = 900)
+
+barplot(d_title[1:15,]$freq, las = 2, names.arg = d_title[1:15,]$word,
+        col ="red", main ="Most frequent words in Title",
+        ylab = "Word frequencies")
+```
+
+## Description Wordcloud and Frequency Histogram
+
+```{r description data cleaning, echo=FALSE, warning=FALSE}
+des <- metadata[,"Description"]
+des <- toString(des)
+des <- read_lines(des)
+docs_des <- Corpus(VectorSource(des))
+
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+docs_des <- tm_map(docs_des, toSpace, "/")
+docs_des <- tm_map(docs_des, toSpace, "@")
+docs_des <- tm_map(docs_des, toSpace, "\\|")
+
+# Remove numbers
+docs_des <- tm_map(docs_des, removeNumbers)
+# Remove punctuations
+docs_des <- tm_map(docs_des, removePunctuation)
+# Eliminate extra white spaces
+docs_des <- tm_map(docs_des, stripWhitespace)
+# Remove english common stopwords
+docs_des <- tm_map(docs_des, removeWords, stopwords("english"))
+docs_des <- tm_map(docs_des, removeWords, c("the"))
+
+dtm_des <- TermDocumentMatrix(docs_des)
+m_des <- as.matrix(dtm_des)
+v_des <- sort(rowSums(m_des),decreasing=TRUE)
+d_des <- data.frame(word = names(v_des),freq=v_des)
+
+des_word <- wordcloud2(d_des, size = 1, minSize = 2, color = c("red", "lightgrey", "black", "maroon")) + WCtheme(2)
+saveWidget(des_word, "tmp.html", selfcontained = F)
+webshot("tmp.html", "wc1.png", delay = 5, vwidth = 900, vheight = 900)
+
+barplot(d_des[1:15,]$freq, las = 2, names.arg = d_des[1:15,]$word,
+        col ="red", main ="Most frequent words in Description",
+        ylab = "Word frequencies")
+```
+
+## Topic Wordcloud and Frequency Histogram
+
+```{r topic data cleaning, echo=FALSE, warning=FALSE}
+top <- metadata[,"topic"]
+top  <- toString(top)
+top  <- read_lines(top)
+docs_top  <- Corpus(VectorSource(top))
+
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+docs_top <- tm_map(docs_top, toSpace, "/")
+docs_top <- tm_map(docs_top, toSpace, "@")
+docs_top <- tm_map(docs_top, toSpace, "\\|")
+
+# Convert the text to lower case
+docs_top <- tm_map(docs_top, content_transformer(tolower))
+# Remove numbers
+docs_top <- tm_map(docs_top, removeNumbers)
+# Remove punctuations
+docs_top <- tm_map(docs_top, removePunctuation)
+# Eliminate extra white spaces
+docs_top <- tm_map(docs_top, stripWhitespace)
+# Remove english common stopwords
+docs_top <- tm_map(docs_top, removeWords, stopwords("english"))
+docs_top <- tm_map(docs_top, removeWords, c("the"))
+
+dtm_top <- TermDocumentMatrix(docs_top)
+m_top <- as.matrix(dtm_top)
+v_top <- sort(rowSums(m_top),decreasing=TRUE)
+d_top <- data.frame(word = names(v_top),freq=v_top)
+
+top_word <- wordcloud2(d_top, size = 2, minSize = 3, color = c("red", "lightgrey", "black", "maroon")) + WCtheme(2)
+saveWidget(top_word, "tmp.html", selfcontained = F)
+webshot("tmp.html", "wc1.png", delay = 5, vwidth = 900, vheight = 900)
+
+barplot(d_top[1:15,]$freq, las = 2, names.arg = d_top[1:15,]$word,
+        col ="red", main ="Most frequent words in Topic",
+        ylab = "Word frequencies")
+```
+
+## Keyword Wordcloud and Frequency Histogram
+
+```{r keyword data cleaning, echo=FALSE, warning=FALSE}
+key <- metadata[,"key"]
+key  <- toString(key)
+key  <- read_lines(key)
+docs_key  <- Corpus(VectorSource(key))
+
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+docs_key <- tm_map(docs_key, toSpace, "/")
+docs_key <- tm_map(docs_key, toSpace, "@")
+docs_key <- tm_map(docs_key, toSpace, "\\|")
+
+# Convert the text to lower case
+docs_key <- tm_map(docs_key, content_transformer(tolower))
+# Remove numbers
+docs_key <- tm_map(docs_key, removeNumbers)
+# Remove punctuations
+docs_key <- tm_map(docs_key, removePunctuation)
+# Eliminate extra white spaces
+docs_key <- tm_map(docs_key, stripWhitespace)
+# Remove english common stopwords
+docs_key <- tm_map(docs_key, removeWords, stopwords("english"))
+docs_key <- tm_map(docs_key, removeWords, c("the"))
+
+dtm_key <- TermDocumentMatrix(docs_key)
+m_key <- as.matrix(dtm_key)
+v_key <- sort(rowSums(m_key),decreasing=TRUE)
+d_key <- data.frame(word = names(v_key),freq=v_key)
+
+key_word <- wordcloud2(d_key, size = 2, minSize = 1, color = c("red", "lightgrey", "black", "maroon")) + WCtheme(2)
+saveWidget(key_word, "tmp.html", selfcontained = F)
+webshot("tmp.html", "wc1.png", delay = 5, vwidth = 900, vheight = 900)
+
+barplot(d_key[1:15,]$freq, las = 2, names.arg = d_key[1:15,]$word,
+        col ="red", main ="Most frequent words",
+        ylab = "Word frequencies")
+```
+
+## Resource Type Wordcloud and Frequency Histogram
+
+```{r resource data cleaning, echo=FALSE, warning=FALSE}
+res <- metadata[,"resource"]
+res  <- toString(res)
+res  <- read_lines(res)
+docs_res  <- Corpus(VectorSource(res))
+
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+docs_res <- tm_map(docs_res, toSpace, "/")
+docs_res <- tm_map(docs_res, toSpace, "@")
+docs_res <- tm_map(docs_res, toSpace, "\\|")
+
+# Convert the text to lower case
+docs_res <- tm_map(docs_res, content_transformer(tolower))
+# Remove numbers
+docs_res <- tm_map(docs_res, removeNumbers)
+# Remove punctuations
+docs_res <- tm_map(docs_res, removePunctuation)
+# Eliminate extra white spaces
+docs_res <- tm_map(docs_res, stripWhitespace)
+# Remove english common stopwords
+docs_res <- tm_map(docs_res, removeWords, stopwords("english"))
+docs_res <- tm_map(docs_res, removeWords, c("the"))
+
+dtm_res <- TermDocumentMatrix(docs_res)
+m_res <- as.matrix(dtm_res)
+v_res <- sort(rowSums(m_res),decreasing=TRUE)
+d_res <- data.frame(word = names(v_res),freq=v_res)
+
+res_word <- wordcloud2(d_res, size = 1, minSize = 1, color = c("red", "lightgrey", "black", "maroon")) + WCtheme(2)
+saveWidget(res_word, "tmp.html", selfcontained = F)
+webshot("tmp.html", "wc1.png", delay = 5, vwidth = 900, vheight = 900)
+
+barplot(d_res[1:15,]$freq, las = 2, names.arg = d_res[1:15,]$word,
+        col ="red", main ="Most frequent words",
+        ylab = "Word frequencies")
+```
