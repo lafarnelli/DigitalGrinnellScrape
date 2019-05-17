@@ -1,13 +1,13 @@
-install.packages("dplyr")
-install.packages("foreach")
-install.packages("tidyr")
-install.packages("tidytext")
-install.packages("httr")
-install.packages("rvest")
-install.packages("RCurl")
-install.packages("tidyverse")
-install.packages("stringr")
-install.packages("doParallel")
+#install.packages("dplyr")
+#install.packages("foreach")
+#install.packages("tidyr")
+#install.packages("tidytext")
+#install.packages("httr")
+#install.packages("rvest")
+#install.packages("RCurl")
+#install.packages("tidyverse")
+#install.packages("stringr")
+#install.packages("doParallel")
 library(doParallel) 
 library(foreach)
 library(dplyr)
@@ -18,11 +18,14 @@ library(rvest)
 library(RCurl)
 library(tidyverse)
 library(stringr)
-## THIS SCRIPT ASSUMES WE HAVE ALREADY CONTSTRUCTED urls AND data2 -- MUST HAVE ALREADY RUN SCRAPING STAGE ONE
+## THIS SCRIPT ASSUMES WE HAVE ALREADY CONTSTRUCTED "data2.csv" -- MUST HAVE ALREADY RUN SCRAPING STAGE ONE
 ## BEFORE RUNNING, NEED TO SET PRIORITY OF RSTUDIO TO HIGH IN TASK MANAGER (task manager -> details -> rstudio -> priority)
 
-## Determines the number of clusters to use in parallel
-myCluster <- makeCluster(5)  
+#EXTRACT URLs using the pattern we observed by looking through a few different object pages on the site:
+urls <- paste("https://digital.grinnell.edu/islandora/object/",data2$PID, sep="")
+
+#We chose to use parallellization in order to avoid any more 7-hour loops. A useful skill!
+myCluster <- makeCluster(5)   ## Determines the number of clusters to use in parallel
 registerDoParallel(myCluster)
 
 ## Function for extracting metadata from the url
@@ -201,6 +204,3 @@ metadata <- metadata[,-4]
 metadata <- metadata[,-12]
 
 write.csv(metadata, "H:/metadata.csv")
-
-## NEED TO CLEAN THE PID COLUMN SO THAT ONLY NUMBERS AFTER "grinnell:" ARE EXTRACTED 
-## NEED TO MERGE data2 AND cleaned BY PID
