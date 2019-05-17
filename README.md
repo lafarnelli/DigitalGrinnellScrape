@@ -25,11 +25,9 @@ From the html output wehad scraped, we turned into dataframes for each object an
 ### Data Visualization
 
 ##### app.R
-##### .Rmd
-##### .Rmd
-##### .Rmd
-##### .html
-##### .html
+##### Collections Comparison.Rmd & collections_comparison.html
+##### Dates Comparison.Rmd & dates_comparison.html
+##### Variables Comparison.Rmd & variables_comparison.html
 
 Our data is almost entirely categorical (with the exception of the variable Index Date, which describes the date of an object's creation), and dealing with textual information, so we incorporate several wordclouds assessing different levels and facets of the collections, as well as barplots comparing frequencies of objects across collections and frequencies of topics/themes across objects. 
 
