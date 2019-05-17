@@ -24,10 +24,6 @@ library(stringr)
 # and are numerous enough to overwhelm our analysis. Perhaps someone could perform similar
 # analyses just on those in the future! We decided to remove them:
 data <- digitalgrinnell_csv_export[ -grep("faulconer", digitalgrinnell_csv_export$PID), ]
-#These pages all require login by the librarian:
-data <- data[ -grep("Alumni oral history interview", data$Description), ]
-#This page was under maintenance on the day we ran this scraping script and halted the script bc it had no title:
-data <- data[ -grep("Disruptive Mood Dysregulation Disorder and What a Good Day Looks Like", data$Title), ]
 
 #REMOVE FIRST 34 CASES (COLLECTIONS, NOT OBJECTS)
 data2 <- data[-c(1:34),]
@@ -35,7 +31,7 @@ data2 <- data[-c(1:34),]
 #STEP TWO: EXTRACT URLs
 urls <- paste("https://digital.grinnell.edu/islandora/object/",data2$PID, sep="")
 
-#REMOVE NULL PAGES and PAGES REQUIRING LOGIN
+#REMOVE NULL PAGES, PAGES UNDER MAINTENANCE and PAGES REQUIRING LOGIN
 omitdata <- data.frame()
 for (i in 1:length(urls)) {
   if (is.null(content(GET(urls[i])))){
