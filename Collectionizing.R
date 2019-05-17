@@ -21,30 +21,34 @@ library(RCurl)
 library(tidyverse)
 library(stringr)
 
-collections <- c("Visualizing Abolition and Freedom",
-                 "Social Gospel",
-                 "Scholarship at Grinnell",
-                 "Student Scholarship",
-                 "Faculty Scholarship",
-                 "Syllabi and Curricular Materials",
-                 "Early College History",
-                 "G.W. Cook Correspondence",
-                 "Grinnell College Buildings",
-                 "Historic Iowa Postcards",
-                 "Jimmy Ley Collection",
-                 "Kleinschmidt Architectural History",
-                 "Life at Grinnell College",
-                 "Social Gospel",
-                 "Grinnell College Geology Collection",
-                 "Visualizing Abolition and Freedom",
-                 "Ancient Coins",
-                 "Social Justice at Grinnell",
-                 "Poweshiek History Preservation Project")
+collections <- c("Social Gospel", #34
+  "Scholarship at Grinnell",
+  "Student Scholarship",
+  "Faculty Scholarship",
+  "Syllabi and Curricular Materials",
+  "Early College History",
+  "G.W. Cook Correspondence",
+  "Grinnell College Buildings",
+  "Historic Iowa Postcards",
+  "Jimmy Ley Collection",
+  "Kleinschmidt Architectural History",
+  "Life at Grinnell College",
+  "Social Gospel",
+  "Grinnell College Geology Collection",
+  "Visualizing Abolition and Freedom",
+  "Ancient Coins",
+  "Social Justice at Grinnell",
+  "Poweshiek History Preservation Project")
 
-colldf <- data.frame()
-for (i in collections){
-  colldf$name[1] <- (collections[1])
-  
-  #Determine the number of objects in each collections
-  colldf$freq <- length(grep(metadata$item, collections(i)))
+
+temp <- data.frame()
+
+getCol<-function(str){
+  temp <- metadata[grep(collections[1], metadata$item),]
 }
+
+getColSize<-function(str){
+  temp <- metadata[grep(collections[1], metadata$item),]
+  length(temp)
+}
+
