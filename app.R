@@ -1,22 +1,21 @@
-install.packages("dplyr")
-install.packages("ggplot2")
-install.packages("readr")
-install.packages("RColorBrewer") 
-install.packages("shiny")
-install.packages("stringr")
-install.packages("tidygraph")
-install.packages("tidyr")
-install.packages("tidytext")
-install.packages("tidyverse")
-install.packages("tm")
-install.packages("wordcloud2")
-install.packages("survey")
-install.packages("memoise")
-install.packages("readxl")
-install.packages("wordcloud")
-install.packages("stats")
-install.packages("DT")
-install.packages("plotly")
+#install.packages("dplyr")
+#install.packages("ggplot2")
+#install.packages("readr")
+#install.packages("RColorBrewer") 
+#install.packages("shiny")
+#install.packages("stringr")
+#install.packages("tidygraph")
+#install.packages("tidyr")
+#install.packages("tidytext")
+#install.packages("tidyverse")
+#install.packages("tm")
+#install.packages("wordcloud2")
+#install.packages("survey")
+#install.packages("memoise")
+#install.packages("readxl")
+#install.packages("wordcloud")
+#install.packages("stats")
+#install.packages("DT")
 library(DT)
 library(dplyr)     
 library(ggplot2)   
@@ -36,12 +35,9 @@ library(memoise)
 library(readxl)
 library(stats)
 library(markdown)
-library(plotly)
-
 
 #import cleaned dataset
-data <- read.csv("~/Desktop/metadata.csv") 
-#requires that you downloaded metadata and imported it as a dataset
+data <- metadata #requires that you downloaded metadata and imported it as a dataset
 #data <- read.csv("metadata.csv") #requires that the file is saved in the same folder as app.R
 
 #Key:
@@ -50,17 +46,9 @@ data <- read.csv("~/Desktop/metadata.csv")
 #third <- 1951-2000
 #fourth <- 2001-2019
 
-#------------------------------------------------------------------------------------------------global
-
-
-first <- data %>% filter(between(date, 1840, 1900))
-second <- data %>% filter(between(date, 1901, 1950))
-ggplot(data=second) + geom_histogram(mapping = aes(date))
-third <- data %>% filter(between(date, 1951, 2000))
-ggplot(data=third) + geom_histogram(mapping = aes(date))
-fourth <- data %>% filter(between(date, 2001, 2019))
-ggplot(data=fourth) + geom_histogram(mapping = aes(date))
-
+#-------------------------------------------------------------------------------------------------------------------#
+#                                         DATA WRANGLING & CLEANING                                                 #
+#-------------------------------------------------------------------------------------------------------------------#
 
 #faceting date into four time periods according to above Key 
 as.integer(data$date)
@@ -69,39 +57,35 @@ second <- data %>% filter(between(date, 1901, 1950))
 third <- data %>% filter(between(date, 1951, 2000))
 fourth <- data %>% filter(between(date, 2001, 2019))
 
-#cleaning description data
-first <- first["Description"]
-first <- as.String(first$Description)
+#cleaning date data
+first <- first["topic"]
+first <- as.String(first$topic)
 first <- as.character(first)
 
-second <- second["Description"]
-second <- as.String(second$Description)
+second <- second["topic"]
+second <- as.String(second$topic)
 second <- as.character(second)
 
-third <- third["Description"]
-third <- as.String(third$Description)
+third <- third["topic"]
+third <- as.String(third$topic)
 third <- as.character(third)
 
-fourth <- fourth["Description"]
-fourth <- as.String(fourth$Description)
+fourth <- fourth["topic"]
+fourth <- as.String(fourth$topic)
 fourth <- as.character(fourth)
 
-# contains characters?
-is.character(data$Title)
-#no
-is.character(data$Description)
-#yes
+#confirming: topic =/= character?
 is.character(data$topic)
-#no
+
+#transforming to character for word cloud
+data$topic <- as.character(data$topic, mode = "list")
 
 #creating dropdown list of time periods
 dateranges <<- list("1840-1900" = first, "1901-1950" = second, "1951-2000" = third, "2001-2019" = fourth)
 
 #cache results to recall again faster
 getTermMatrix <- memoise(function(daterange) {
-  #if (!(daterange %in% dateranges))
-  #stop("Unknown daterange")
-  
+
   #remove prepositions, punctuation, etc.
   myCorpus = Corpus(VectorSource(daterange))
   myCorpus = tm_map(myCorpus, content_transformer(tolower))
@@ -118,9 +102,9 @@ getTermMatrix <- memoise(function(daterange) {
   sort(rowSums(m), decreasing = TRUE)
 })
 
-
-#------------------------------------------------------------------------------------------------ui
-
+#--------------------------------------------------------------------------------------------------------------------#
+#                                             DEFINE USER INTERFACE                                                  #
+#--------------------------------------------------------------------------------------------------------------------#
 #building app panels / main page / menu options
 ui <- navbarPage("Exploring Digital Grinnell",
                  tabPanel("Word Cloud",
@@ -153,12 +137,6 @@ ui <- navbarPage("Exploring Digital Grinnell",
                             tabPanel("Table",
                                      DT::dataTableOutput("table")
                             ),
-                            tabPanel("Visual Summaries",
-                                     plotlyOutput("plot2"),
-                                     plotlyOutput("plot3"),
-                                     plotlyOutput("plot4"),
-                                     plotlyOutput("plot5")
-                            ),
                             tabPanel("About",
                                      fluidRow(
                                        h1("About the Data Source"),
@@ -184,13 +162,15 @@ ui <- navbarPage("Exploring Digital Grinnell",
                             )
                  )
 
-#------------------------------------------------------------------------------------------------server
-server <- function(input, output) {
-  # Define a reactive expression for the document term matrix
+#--------------------------------------------------------------------------------------------------------------------#
+#                                             DEFINE SERVER LOGIC                                                    #
+#--------------------------------------------------------------------------------------------------------------------#
+server <- function(input, output, session) {
+  # define a reactive expression for the document term matrix
   terms <- reactive({
-    # Change when the "update" button is pressed...
+    # change when the "update" button is pressed...
     input$update
-    # ...but not for anything else
+    # but not for anything else
     isolate({
       withProgress({
         setProgress(message = "Processing corpus...")
@@ -199,64 +179,25 @@ server <- function(input, output) {
     })
   })
   
-  # Make the wordcloud drawing predictable during a session
+  # make the wordcloud drawing predictable during a session
   wordcloud_rep <- repeatable(wordcloud)
   
+  #plot wordcloud + customization 
   output$plot <- renderPlot({
     v <- terms()
-    wordcloud_rep(names(v), v, scale=c(5,0.5),
+    wordcloud_rep(names(v), v, scale=c(4,0.5),
                   min.freq = input$freq, max.words=input$max,
                   colors=brewer.pal(8, "Dark2"))
   })
+  #summary table of data
   output$summary <- renderPrint({
     summary(data)
   })
+  #searchable table of data
   output$table <- DT::renderDataTable({
     DT::datatable(data)
   })
-  output$plot2 <- renderPlotly({
-    print(
-      ggplotly(
-      ggplot(data=first) +                         
-    geom_histogram(mapping = aes(first$date), 
-                   binwidth = NULL, bins = 20, col="red", fill="lightblue") + 
-    geom_density(mapping = aes(x=first$date, y = (..count..)))  +   
-    labs(title="Figure 9: Housing Prices in Ames, Iowa (in $100,000)", 
-         x="Sale Price of Individual Homes")))
-  })
-  output$plot3 <- renderPlotly({
-    print(
-      ggplotly(
-        ggplot(data=second) +                         
-          geom_histogram(mapping = aes(second$date), 
-                         binwidth = NULL, bins = 20, col="red", fill="lightblue") + 
-          geom_density(mapping = aes(x=second$date, y = (..count..)))  +   
-          labs(title="Figure 9: Housing Prices in Ames, Iowa (in $100,000)", 
-               x="Sale Price of Individual Homes")))
-  })
-  output$plot4 <- renderPlotly({
-    print(
-      ggplotly(
-        ggplot(data=third) +                         
-          geom_histogram(mapping = aes(third$date), 
-                         binwidth = NULL, bins = 20, col="red", fill="lightblue") + 
-          geom_density(mapping = aes(x=third$date, y = (..count..)))  +   
-          labs(title="Figure 9: Housing Prices in Ames, Iowa (in $100,000)", 
-               x="Sale Price of Individual Homes")))
-  })
-  output$plot5 <- renderPlotly({
-    print(
-      ggplotly(
-        ggplot(data=fourth) +                         
-          geom_histogram(mapping = aes(fourth$date), 
-                         binwidth = NULL, bins = 20, col="red", fill="lightblue") + 
-          geom_density(mapping = aes(x=fourth$date, y = (..count..)))  +   
-          labs(title="Figure 9: Housing Prices in Ames, Iowa (in $100,000)", 
-               x="Sale Price of Individual Homes")))
-  })
 }
 
-
-#------------------------------------------------------------------------------------------------run app!!!
 
 shinyApp(ui = ui, server = server)
