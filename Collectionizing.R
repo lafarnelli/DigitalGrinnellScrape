@@ -1,5 +1,6 @@
 #Takes in metadata.csv (output from Scraping.R)
-#Produces a dataframe for each interesting collection
+#function getCol Produces a dataframe for each interesting collection (takes a string as input)
+#function getColSize Produces size of that collection
 #For use in collection-level analysis
 
 #install.packages("dplyr")
