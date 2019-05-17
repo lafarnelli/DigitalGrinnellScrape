@@ -1,0 +1,182 @@
+---
+title: "Comparison of Word Frequency across Date Quartiles"
+author: "Emma and LaAnna"
+date: "May 16, 2019"
+output: html_document
+---
+```{r setup, message= FALSE, warning=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+```{r load the data, echo=FALSE, warning=FALSE, message=FALSE}
+#install.packages("webshot")
+#install.packages("htmlwidgets")
+library(tm)
+library(SnowballC)
+library(wordcloud)
+library(wordcloud2)
+library(RColorBrewer)
+library(readr)
+library(webshot)
+library(htmlwidgets)
+
+metadata <- read_csv("metadata.csv", col_types = cols(
+  x = "i", # integer column
+  treatment = "c" # character column
+))
+
+summary(metadata$date)
+
+## create date ranges based on quartile distributions
+date1 <- metadata[which(metadata$date < 1914),]
+date2 <- metadata[which(metadata$date >= 1914 & metadata$date < 1950),]
+date3 <- metadata[which(metadata$date >= 1950 & metadata$date < 1988),]
+date4 <- metadata[which(metadata$date >= 1988),]
+```
+
+
+## Pre-1914 Wordcloud and Frequency Histogram
+
+```{r date1 data cleaning, echo=FALSE, warning=FALSE}
+date1 <- date1[,"Title"]
+date1 <- toString(date1)
+date1 <- read_lines(date1)
+docs_date1 <- Corpus(VectorSource(date1))
+
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+docs_date1 <- tm_map(docs_date1, toSpace, "/")
+docs_date1 <- tm_map(docs_date1, toSpace, "@")
+docs_date1 <- tm_map(docs_date1, toSpace, "\\|")
+
+# Remove numbers
+docs_date1 <- tm_map(docs_date1, removeNumbers)
+# Remove punctuations
+docs_date1 <- tm_map(docs_date1, removePunctuation)
+# Eliminate extra white spaces
+docs_date1 <- tm_map(docs_date1, stripWhitespace)
+# Remove english common stopwords
+docs_date1 <- tm_map(docs_date1, removeWords, stopwords("english"))
+
+dtm_date1 <- TermDocumentMatrix(docs_date1)
+m_date1 <- as.matrix(dtm_date1)
+v_date1 <- sort(rowSums(m_date1),decreasing=TRUE)
+d_date1 <- data.frame(word = names(v_date1),freq=v_date1)
+
+date1_word <- wordcloud2(d_date1, size = 2, minSize = 3, color = c("red", "lightgrey", "black", "maroon")) + WCtheme(2)
+saveWidget(date1_word, "tmp.html", selfcontained = F)
+webshot("tmp.html", "wc1.png", delay = 5, vwidth = 900, vheight = 900)
+
+barplot(d_date1[1:15,]$freq, las = 2, names.arg = d_date1[1:15,]$word,
+        col ="red", main ="Most frequent words in Dates Pre-1914",
+        ylab = "Word frequencies")
+```
+
+## 1914-1949 Wordcloud and Frequency Histogram
+
+```{r date2 data cleaning, echo=FALSE, warning=FALSE}
+date2 <- date2[,"Title"]
+date2 <- toString(date2)
+date2 <- read_lines(date2)
+docs_date2 <- Corpus(VectorSource(date2))
+
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+docs_date2 <- tm_map(docs_date2, toSpace, "/")
+docs_date2 <- tm_map(docs_date2, toSpace, "@")
+docs_date2 <- tm_map(docs_date2, toSpace, "\\|")
+
+# Remove numbers
+docs_date2 <- tm_map(docs_date2, removeNumbers)
+# Remove punctuations
+docs_date2 <- tm_map(docs_date2, removePunctuation)
+# Eliminate extra white spaces
+docs_date2 <- tm_map(docs_date2, stripWhitespace)
+# Remove english common stopwords
+docs_date2 <- tm_map(docs_date2, removeWords, stopwords("english"))
+
+dtm_date2 <- TermDocumentMatrix(docs_date2)
+m_date2 <- as.matrix(dtm_date2)
+v_date2 <- sort(rowSums(m_date2),decreasing=TRUE)
+d_date2 <- data.frame(word = names(v_date2),freq=v_date2)
+
+date2_word <- wordcloud2(d_date2, size = 2, minSize = 3, color = c("red", "lightgrey", "black", "maroon")) + WCtheme(2)
+saveWidget(date2_word, "tmp.html", selfcontained = F)
+webshot("tmp.html", "wc1.png", delay = 5, vwidth = 900, vheight = 900)
+
+barplot(d_date2[1:15,]$freq, las = 2, names.arg = d_date2[1:15,]$word,
+        col ="red", main ="Most frequent words in 1914-1949",
+        ylab = "Word frequencies")
+```
+
+## 1950-1987 Wordcloud and Frequency Histogram
+
+```{r date3 data cleaning, echo=FALSE, warning=FALSE}
+date3 <- date3[,"Title"]
+date3 <- toString(date3)
+date3 <- read_lines(date3)
+docs_date3 <- Corpus(VectorSource(date3))
+
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+docs_date3 <- tm_map(docs_date3, toSpace, "/")
+docs_date3 <- tm_map(docs_date3, toSpace, "@")
+docs_date3 <- tm_map(docs_date3, toSpace, "\\|")
+
+# Remove numbers
+docs_date3 <- tm_map(docs_date3, removeNumbers)
+# Remove punctuations
+docs_date3 <- tm_map(docs_date3, removePunctuation)
+# Eliminate extra white spaces
+docs_date3 <- tm_map(docs_date3, stripWhitespace)
+# Remove english common stopwords
+docs_date3 <- tm_map(docs_date3, removeWords, stopwords("english"))
+
+dtm_date3 <- TermDocumentMatrix(docs_date3)
+m_date3 <- as.matrix(dtm_date3)
+v_date3 <- sort(rowSums(m_date3),decreasing=TRUE)
+d_date3 <- data.frame(word = names(v_date3),freq=v_date3)
+
+date3_word <- wordcloud2(d_date3, size = 2, minSize = 3, color = c("red", "lightgrey", "black", "maroon")) + WCtheme(2)
+saveWidget(date3_word, "tmp.html", selfcontained = F)
+webshot("tmp.html", "wc1.png", delay = 5, vwidth = 900, vheight = 900)
+
+barplot(d_date3[1:15,]$freq, las = 2, names.arg = d_date3[1:15,]$word,
+        col ="red", main ="Most frequent words in 1950-1987",
+        ylab = "Word frequencies")
+```
+
+## 1988-Present Wordcloud and Frequency Histogram
+
+```{r date4 data cleaning, echo=FALSE, warning=FALSE}
+date4 <- date4[,"Title"]
+date4 <- toString(date4)
+date4 <- read_lines(date4)
+docs_date4 <- Corpus(VectorSource(date4))
+
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+docs_date4 <- tm_map(docs_date4, toSpace, "/")
+docs_date4 <- tm_map(docs_date4, toSpace, "@")
+docs_date4 <- tm_map(docs_date4, toSpace, "\\|")
+
+# Remove numbers
+docs_date4 <- tm_map(docs_date4, removeNumbers)
+# Remove punctuations
+docs_date4 <- tm_map(docs_date4, removePunctuation)
+# Eliminate extra white spaces
+docs_date4 <- tm_map(docs_date4, stripWhitespace)
+# Remove english common stopwords
+docs_date4 <- tm_map(docs_date4, removeWords, stopwords("english"))
+docs_date4 <- tm_map(docs_date4, removeWords, c("the"))
+
+dtm_date4 <- TermDocumentMatrix(docs_date4)
+m_date4 <- as.matrix(dtm_date4)
+v_date4 <- sort(rowSums(m_date4),decreasing=TRUE)
+d_date4 <- data.frame(word = names(v_date4),freq=v_date4)
+
+date4_word <- wordcloud2(d_date4, size = 1, minSize = 3, color = c("red", "lightgrey", "black", "maroon")) + WCtheme(2)
+saveWidget(date4_word, "tmp.html", selfcontained = F)
+webshot("tmp.html", "wc1.png", delay = 5, vwidth = 900, vheight = 900)
+
+barplot(d_date4[1:15,]$freq, las = 2, names.arg = d_date4[1:15,]$word,
+        col ="red", main ="Most frequent words in 1988-Present",
+        ylab = "Word frequencies")
+```
