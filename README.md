@@ -12,8 +12,9 @@ We use R for web scraping, data cleaning, text mining, modelling, and data visua
 
 ### Web Scraping
 
-#####Scraping Stage One.R
-#####Scraping.R
+##### Scraping Stage One.R
+
+##### Scraping.R
 
 Our data was scraped from Digital Grinnell in two stages (represented in the scripts Scraping Stage One.R and Scraping.R). This was not merely a scrape single table from a webpage; we iteratively scrape data from several indexed webpages, each of which has a metadata table of variable length and detail, and use common metadata across collections in order to perform analysis on the whole site. The first stage took the .csv we exported from Digital Grinnell's search tool and filtered it to useful objects, which weren't corrupt pages or pages requiring log-ins. The second stage took that list of useful webpages and scraped their metadata. 
 
