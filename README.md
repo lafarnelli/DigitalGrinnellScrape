@@ -10,24 +10,30 @@ We use R for web scraping, data cleaning, text mining, modelling, and data visua
 
 #### Our tasks (and associated items in this repository) fall into the following categories:
 
-##### Web Scraping
+### Web Scraping
 
-Scraping Stage One.R
-Scraping.R
+#####Scraping Stage One.R
+#####Scraping.R
 
 Our data was scraped from Digital Grinnell in two stages (represented in the scripts Scraping Stage One.R and Scraping.R). This was not merely a scrape single table from a webpage; we iteratively scrape data from several indexed webpages, each of which has a metadata table of variable length and detail, and use common metadata across collections in order to perform analysis on the whole site. The first stage took the .csv we exported from Digital Grinnell's search tool and filtered it to useful objects, which weren't corrupt pages or pages requiring log-ins. The second stage took that list of useful webpages and scraped their metadata. 
 
-##### Data Processing & Cleaning
+### Data Processing & Cleaning
 
 From the html output wehad scraped, we turned into dataframes for each object and combined them....
 
-##### Data Visualization
+### Data Visualization
 
-app.R
-
+##### app.R
+##### .Rmd
+##### .Rmd
+##### .Rmd
+##### .html
+##### .html
 
 Our data is almost entirely categorical (with the exception of the variable Index Date, which describes the date of an object's creation), and dealing with textual information, so we incorporate several wordclouds assessing different levels and facets of the collections, as well as barplots comparing frequencies of objects across collections and frequencies of topics/themes across objects. 
 
-##### Modeling
+### Modeling
+
+##### model.R
 
 This stage of analysis provided an opportunity for the "research" requirement of the assignment, as we learned about LDA in order to cluster the language from the College's object descriptions into a few "topics."
