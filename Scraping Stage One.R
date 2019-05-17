@@ -1,11 +1,11 @@
-install.packages("dplyr")
-install.packages("tidyr")
-install.packages("tidytext")
-install.packages("httr")
-install.packages("rvest")
-install.packages("RCurl")
-install.packages("tidyverse")
-install.packages("stringr")
+#install.packages("dplyr")
+#install.packages("tidyr")
+#install.packages("tidytext")
+#install.packages("httr")
+#install.packages("rvest")
+#install.packages("RCurl")
+#install.packages("tidyverse")
+#install.packages("stringr")
 library(dplyr)
 library(tidyr)
 library(tidytext)
@@ -15,37 +15,18 @@ library(RCurl)
 library(tidyverse)
 library(stringr)
 
-#--------------------------------HTTR SCRAPING FROM HOME PAGE--------------------------------#
-#url <- 'https://digital.grinnell.edu/'
-#website1 <- GET(url) 
-#print(content(website1))
-
-#titles1 <- html_nodes(content(website1), "h1")
-#print(html_text(titles1)[[1]]) # "Welcome to Digital Grinnell"
-
-#titles2 <- html_nodes(content(website1), "h2")
-#print(html_text(titles2)[[1]]) # "Browse by Collection"
-#print(html_text(titles2)[[2]]) # "Collection Search"
-#print(html_text(titles2)[[3]]) # "User Login"
-
-#titles <- html_nodes(content(website1), "h3")
-#print(html_text(titles)[[1]]) # "Scholarship at Grinnell"
-#print(html_text(titles)[[2]]) # "Special Collections and Archives"
-#print(html_text(titles)[[3]]) # "Faulconer Art"
-#print(html_text(titles)[[4]]) # "Grinnell College Campus Collections"
-#print(html_text(titles)[[5]]) # "Social Justice at Grinnell"
-#print(html_text(titles)[[6]]) # "Poweshiek History Preservation Project"
-#print(html_text(titles)[[7]]) # "Alumni Oral Histories"
-#---------------------------------------------------------------------------------------------#
-
-
 #--------------------------------SCRAPING OBJECT PAGES FROM .CSV------------------------------#
-#INCORPORATING .CSV EXPORTED FROM THE SEARCH PAGE
+#INCORPORATES .CSV EXPORTED FROM THE SEARCH PAGE (saved in this repo as digitalgrinnell_csv_export.csv)
 #https://digital.grinnell.edu/islandora/object/NUMBER is the form all object URLs take
 
-#STEP ONE: FILTER OUT FAULCONER & ALUMNI ORAL HISTORIES
-data <- csv_export_1556812852[ -grep("faulconer", csv_export_1556812852$PID), ]
+#STEP ONE: FILTER OUT INCOMPATIBLE CASES
+#The art objects in Faulconer Gallery are just too different from the rest of the collections,
+# and are numerous enough to overwhelm our analysis. Perhaps someone could perform similar
+# analyses just on those in the future! We decided to remove them:
+data <- digitalgrinnell_csv_export[ -grep("faulconer", digitalgrinnell_csv_export$PID), ]
+#These pages all require login by the librarian:
 data <- data[ -grep("Alumni oral history interview", data$Description), ]
+#This page was under maintenance on the day we ran this scraping script and halted the script bc it had no title:
 data <- data[ -grep("Disruptive Mood Dysregulation Disorder and What a Good Day Looks Like", data$Title), ]
 
 #REMOVE FIRST 34 CASES (COLLECTIONS, NOT OBJECTS)
@@ -72,6 +53,12 @@ for (i in 1:length(urls)) {
 
 data2 <- data2[!(data2$PID %in% omitdata$PID),]
 
+#Save the output so we don't have to run this loop for another 6 hours next time:
 write.csv(data2, "H:/data2.csv")
 write.csv(data, "H:/data.csv")
-write.csv(omitdata, "H:/omitdata.csv")
+write.csv(omitdata, "H:/omitdata.csv") 
+#A note: we recognize that the DG website is still under construction and that if we had run this
+# scraping script on a different day, we may have filtered out different results. 
+# We consider the effects on our analysis to be minimal because there are around 9000 cases, 
+# so losing a few here and there should be okay, and because someone else could run the same code in 
+# the future and choose different cases to filter. 
