@@ -1,0 +1,362 @@
+---
+title: "Comparison of Word Frequency across Collections"
+author: "Emma and LaAnna"
+date: "May 16, 2019"
+output: html_document
+---
+
+```{r setup, message= FALSE, warning=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+```{r load the data, echo=FALSE, warning=FALSE, message=FALSE}
+#install.packages("webshot")
+#install.packages("htmlwidgets")
+library(tm)
+library(SnowballC)
+library(wordcloud)
+library(wordcloud2)
+library(RColorBrewer)
+library(readr)
+library(webshot)
+library(htmlwidgets)
+
+metadata <- read_csv("metadata.csv", col_types = cols(
+  x = "i", # integer column
+  treatment = "c" # character column
+))
+
+## numbers listed next to the collection are the number of entries in the dataframe grabbed
+collections <- c("Social Gospel", #34
+                 "Scholarship at Grinnell", #1
+                 "Student Scholarship", #94#
+                 "Faculty Scholarship", #85#
+                 "Syllabi and Curricular Materials", #0
+                 "Early College History", #49#
+                 "G.W. Cook", #0
+                 "Buildings", #47#
+                 "Postcards", #6
+                 "Ley", #0
+                 "Kleinschmidt", #57#
+                 "Life at Grinnell College", #386#
+                 "Geology", #0
+                 "Abolition and Freedom", #0
+                 "Coins", #0
+                 "Social Justice at Grinnell", #49#
+                 "Poweshiek History Preservation Project" #1983#
+                 )
+
+social <- metadata[grep(collections[1], metadata$item),]
+scholar <- metadata[grep(collections[2], metadata$item),]
+sscholar <- metadata[grep(collections[3], metadata$item),]
+fscholar <- metadata[grep(collections[4], metadata$item),]
+syllabi <- metadata[grep(collections[5], metadata$item),]
+early <- metadata[grep(collections[6], metadata$item),]
+cook <- metadata[grep(collections[7], metadata$item),]
+build <- metadata[grep(collections[8], metadata$item),]
+postcards <- metadata[grep(collections[9], metadata$item),]
+ley <- metadata[grep(collections[10], metadata$item),]
+klein <- metadata[grep(collections[11], metadata$item),]
+life <- metadata[grep(collections[12], metadata$item),]
+geology <- metadata[grep(collections[13], metadata$item),]
+abolition <- metadata[grep(collections[14], metadata$item),]
+coins <- metadata[grep(collections[15], metadata$item),]
+justice <- metadata[grep(collections[16], metadata$item),]
+history <- metadata[grep(collections[17], metadata$item),]
+```
+
+
+## Poweshiek History Preservation Project Wordcloud and Frequency Histogram
+
+```{r history data cleaning, echo=FALSE, warning=FALSE}
+history <- history[,"Title"]
+history <- toString(history)
+history <- read_lines(history)
+docs_history <- Corpus(VectorSource(history))
+
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+docs_history <- tm_map(docs_history, toSpace, "/")
+docs_history <- tm_map(docs_history, toSpace, "@")
+docs_history <- tm_map(docs_history, toSpace, "\\|")
+
+# Remove numbers
+docs_history <- tm_map(docs_history, removeNumbers)
+# Remove punctuations
+docs_history <- tm_map(docs_history, removePunctuation)
+# Eliminate extra white spaces
+docs_history <- tm_map(docs_history, stripWhitespace)
+# Remove english common stopwords
+docs_history <- tm_map(docs_history, removeWords, stopwords("english"))
+
+dtm_history <- TermDocumentMatrix(docs_history)
+m_history <- as.matrix(dtm_history)
+v_history <- sort(rowSums(m_history),decreasing=TRUE)
+d_history <- data.frame(word = names(v_history),freq=v_history)
+
+history_word <- wordcloud2(d_history, size = 2, minSize = 3, color = c("red", "lightgrey", "black", "maroon")) + WCtheme(2)
+saveWidget(history_word, "tmp.html", selfcontained = F)
+webshot("tmp.html", "wc1.png", delay = 5, vwidth = 900, vheight = 900)
+
+barplot(d_history[1:15,]$freq, las = 2, names.arg = d_history[1:15,]$word,
+        col ="red", main ="Most frequent words in Poweshiek History Preservation Project",
+        ylab = "Word frequencies")
+```
+
+## Life at Grinnell College Wordcloud and Frequency Histogram
+
+```{r life data cleaning, echo=FALSE, warning=FALSE}
+life <- life[,"Title"]
+life <- toString(life)
+life <- read_lines(life)
+docs_life <- Corpus(VectorSource(life))
+
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+docs_life <- tm_map(docs_life, toSpace, "/")
+docs_life <- tm_map(docs_life, toSpace, "@")
+docs_life <- tm_map(docs_life, toSpace, "\\|")
+
+# Remove numbers
+docs_life <- tm_map(docs_life, removeNumbers)
+# Remove punctuations
+docs_life <- tm_map(docs_life, removePunctuation)
+# Eliminate extra white spaces
+docs_life <- tm_map(docs_life, stripWhitespace)
+# Remove english common stopwords
+docs_life <- tm_map(docs_life, removeWords, stopwords("english"))
+
+dtm_life <- TermDocumentMatrix(docs_life)
+m_life <- as.matrix(dtm_life)
+v_life <- sort(rowSums(m_life),decreasing=TRUE)
+d_life <- data.frame(word = names(v_life),freq=v_life)
+
+life_word <- wordcloud2(d_life, size = 2, minSize = 3, color = c("red", "lightgrey", "black", "maroon")) + WCtheme(2)
+saveWidget(life_word, "tmp.html", selfcontained = F)
+webshot("tmp.html", "wc1.png", delay = 5, vwidth = 900, vheight = 900)
+
+barplot(d_life[1:15,]$freq, las = 2, names.arg = d_life[1:15,]$word,
+        col ="red", main ="Most frequent words in Life at Grinnell College",
+        ylab = "Word frequencies")
+```
+
+## Student Scholarship Wordcloud and Frequency Histogram
+
+```{r sscholar data cleaning, echo=FALSE, warning=FALSE}
+sscholar <- sscholar[,"Title"]
+sscholar <- toString(sscholar)
+sscholar <- read_lines(sscholar)
+docs_sscholar <- Corpus(VectorSource(sscholar))
+
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+docs_sscholar <- tm_map(docs_sscholar, toSpace, "/")
+docs_sscholar <- tm_map(docs_sscholar, toSpace, "@")
+docs_sscholar <- tm_map(docs_sscholar, toSpace, "\\|")
+
+# Remove numbers
+docs_sscholar <- tm_map(docs_sscholar, removeNumbers)
+# Remove punctuations
+docs_sscholar <- tm_map(docs_sscholar, removePunctuation)
+# Eliminate extra white spaces
+docs_sscholar <- tm_map(docs_sscholar, stripWhitespace)
+# Remove english common stopwords
+docs_sscholar <- tm_map(docs_sscholar, removeWords, stopwords("english"))
+docs_sscholar <- tm_map(docs_sscholar, removeWords, c("the"))
+
+dtm_sscholar <- TermDocumentMatrix(docs_sscholar)
+m_sscholar <- as.matrix(dtm_sscholar)
+v_sscholar <- sort(rowSums(m_sscholar),decreasing=TRUE)
+d_sscholar <- data.frame(word = names(v_sscholar),freq=v_sscholar)
+
+sscholar_word <- wordcloud2(d_sscholar, size = 2, minSize = 3, color = c("red", "lightgrey", "black", "maroon")) + WCtheme(2)
+saveWidget(sscholar_word, "tmp.html", selfcontained = F)
+webshot("tmp.html", "wc1.png", delay = 5, vwidth = 900, vheight = 900)
+
+barplot(d_sscholar[1:15,]$freq, las = 2, names.arg = d_sscholar[1:15,]$word,
+        col ="red", main ="Most frequent words in Student Scholarship",
+        ylab = "Word frequencies")
+```
+
+## Faculty Scholarship Wordcloud and Frequency Histogram
+
+```{r fscholar data cleaning, echo=FALSE, warning=FALSE}
+fscholar <- fscholar[,"Title"]
+fscholar <- toString(fscholar)
+fscholar <- read_lines(fscholar)
+docs_fscholar <- Corpus(VectorSource(fscholar))
+
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+docs_fscholar <- tm_map(docs_fscholar, toSpace, "/")
+docs_fscholar <- tm_map(docs_fscholar, toSpace, "@")
+docs_fscholar <- tm_map(docs_fscholar, toSpace, "\\|")
+
+# Remove numbers
+docs_fscholar <- tm_map(docs_fscholar, removeNumbers)
+# Remove punctuations
+docs_fscholar <- tm_map(docs_fscholar, removePunctuation)
+# Eliminate extra white spaces
+docs_fscholar <- tm_map(docs_fscholar, stripWhitespace)
+# Remove english common stopwords
+docs_fscholar <- tm_map(docs_fscholar, removeWords, stopwords("english"))
+docs_fscholar <- tm_map(docs_fscholar, removeWords, c("the"))
+
+dtm_fscholar <- TermDocumentMatrix(docs_fscholar)
+m_fscholar <- as.matrix(dtm_fscholar)
+v_fscholar <- sort(rowSums(m_fscholar),decreasing=TRUE)
+d_fscholar <- data.frame(word = names(v_fscholar),freq=v_fscholar)
+
+fscholar_word <- wordcloud2(d_fscholar, size = 2, minSize = 3, color = c("red", "lightgrey", "black", "maroon")) + WCtheme(2)
+saveWidget(fscholar_word, "tmp.html", selfcontained = F)
+webshot("tmp.html", "wc1.png", delay = 5, vwidth = 900, vheight = 900)
+
+barplot(d_fscholar[1:15,]$freq, las = 2, names.arg = d_sscholar[1:15,]$word,
+        col ="red", main ="Most frequent words in Faculty Scholarship",
+        ylab = "Word frequencies")
+```
+
+## Kleinschmidt Architectural History Wordcloud and Frequency Histogram
+
+```{r klein data cleaning, echo=FALSE, warning=FALSE}
+klein <- klein[,"Title"]
+klein <- toString(klein)
+klein <- read_lines(klein)
+docs_klein <- Corpus(VectorSource(klein))
+
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+docs_klein <- tm_map(docs_klein, toSpace, "/")
+docs_klein <- tm_map(docs_klein, toSpace, "@")
+docs_klein <- tm_map(docs_klein, toSpace, "\\|")
+
+# Remove numbers
+docs_klein <- tm_map(docs_klein, removeNumbers)
+# Remove punctuations
+docs_klein <- tm_map(docs_klein, removePunctuation)
+# Eliminate extra white spaces
+docs_klein <- tm_map(docs_klein, stripWhitespace)
+# Remove english common stopwords
+docs_klein <- tm_map(docs_klein, removeWords, stopwords("english"))
+docs_klein <- tm_map(docs_klein, removeWords, c("the"))
+
+dtm_klein <- TermDocumentMatrix(docs_klein)
+m_klein <- as.matrix(dtm_klein)
+v_klein <- sort(rowSums(m_klein),decreasing=TRUE)
+d_klein <- data.frame(word = names(v_klein),freq=v_klein)
+
+klein_word <- wordcloud2(d_klein, size = 2, minSize = 3, color = c("red", "lightgrey", "black", "maroon")) + WCtheme(2)
+saveWidget(klein_word, "tmp.html", selfcontained = F)
+webshot("tmp.html", "wc1.png", delay = 5, vwidth = 900, vheight = 900)
+
+barplot(d_klein[1:15,]$freq, las = 2, names.arg = d_klein[1:15,]$word,
+        col ="red", main ="Most frequent words in Kleinschmidt Architectural History",
+        ylab = "Word frequencies")
+```
+
+## Early College History Wordcloud and Frequency Histogram
+
+```{r early data cleaning, echo=FALSE, warning=FALSE}
+early <- early[,"Title"]
+early <- toString(early)
+early <- read_lines(early)
+docs_early <- Corpus(VectorSource(early))
+
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+docs_early <- tm_map(docs_early, toSpace, "/")
+docs_early <- tm_map(docs_early, toSpace, "@")
+docs_early <- tm_map(docs_early, toSpace, "\\|")
+
+# Remove numbers
+docs_early <- tm_map(docs_early, removeNumbers)
+# Remove punctuations
+docs_early <- tm_map(docs_early, removePunctuation)
+# Eliminate extra white spaces
+docs_early <- tm_map(docs_early, stripWhitespace)
+# Remove english common stopwords
+docs_early <- tm_map(docs_early, removeWords, stopwords("english"))
+docs_early <- tm_map(docs_early, removeWords, c("the"))
+
+dtm_early <- TermDocumentMatrix(docs_early)
+m_early <- as.matrix(dtm_early)
+v_early <- sort(rowSums(m_early),decreasing=TRUE)
+d_early <- data.frame(word = names(v_early),freq=v_early)
+
+early_word <- wordcloud2(d_early, size = 2, minSize = 3, color = c("red", "lightgrey", "black", "maroon")) + WCtheme(2)
+saveWidget(early_word, "tmp.html", selfcontained = F)
+webshot("tmp.html", "wc1.png", delay = 5, vwidth = 900, vheight = 900)
+
+barplot(d_early[1:15,]$freq, las = 2, names.arg = d_early[1:15,]$word,
+        col ="red", main ="Most frequent words in Early College History",
+        ylab = "Word frequencies")
+```
+
+## Grinnell College Buildings Wordcloud and Frequency Histogram
+
+```{r build data cleaning, echo=FALSE, warning=FALSE}
+build <- build[,"Title"]
+build <- toString(build)
+build <- read_lines(build)
+docs_build <- Corpus(VectorSource(build))
+
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+docs_build <- tm_map(docs_build, toSpace, "/")
+docs_build <- tm_map(docs_build, toSpace, "@")
+docs_build <- tm_map(docs_build, toSpace, "\\|")
+
+# Remove numbers
+docs_build <- tm_map(docs_build, removeNumbers)
+# Remove punctuations
+docs_build <- tm_map(docs_build, removePunctuation)
+# Eliminate extra white spaces
+docs_build <- tm_map(docs_build, stripWhitespace)
+# Remove english common stopwords
+docs_build <- tm_map(docs_build, removeWords, stopwords("english"))
+docs_build <- tm_map(docs_build, removeWords, c("the"))
+
+dtm_build <- TermDocumentMatrix(docs_build)
+m_build <- as.matrix(dtm_build)
+v_build <- sort(rowSums(m_build),decreasing=TRUE)
+d_build <- data.frame(word = names(v_build),freq=v_build)
+
+build_word <- wordcloud2(d_build, size = 2, minSize = 3, color = c("red", "lightgrey", "black", "maroon")) + WCtheme(2)
+saveWidget(build_word, "tmp.html", selfcontained = F)
+webshot("tmp.html", "wc1.png", delay = 5, vwidth = 900, vheight = 900)
+
+barplot(d_build[1:15,]$freq, las = 2, names.arg = d_build[1:15,]$word,
+        col ="red", main ="Most frequent words in Grinnell College Buildings",
+        ylab = "Word frequencies")
+```
+
+## Social Justice at Grinnell College Wordcloud and Frequency Histogram
+
+```{r justice data cleaning, echo=FALSE, warning=FALSE}
+justice <- justice[,"Title"]
+justice <- toString(justice)
+justice <- read_lines(justice)
+docs_justice <- Corpus(VectorSource(justice))
+
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+docs_justice <- tm_map(docs_justice, toSpace, "/")
+docs_justice <- tm_map(docs_justice, toSpace, "@")
+docs_justice <- tm_map(docs_justice, toSpace, "\\|")
+
+# Remove numbers
+docs_justice <- tm_map(docs_justice, removeNumbers)
+# Remove punctuations
+docs_justice <- tm_map(docs_justice, removePunctuation)
+# Eliminate extra white spaces
+docs_justice <- tm_map(docs_justice, stripWhitespace)
+# Remove english common stopwords
+docs_justice <- tm_map(docs_justice, removeWords, stopwords("english"))
+docs_justice <- tm_map(docs_justice, removeWords, c(" the"))
+
+dtm_justice <- TermDocumentMatrix(docs_justice)
+m_justice <- as.matrix(dtm_justice)
+v_justice <- sort(rowSums(m_justice),decreasing=TRUE)
+d_justice <- data.frame(word = names(v_justice),freq=v_justice)
+
+justice_word <- wordcloud2(d_justice, size = 1, minSize = 3, color = c("red", "lightgrey", "black", "maroon")) + WCtheme(2)
+saveWidget(justice_word, "tmp.html", selfcontained = F)
+webshot("tmp.html", "wc1.png", delay = 5, vwidth = 900, vheight = 900)
+
+barplot(d_justice[1:15,]$freq, las = 2, names.arg = d_justice[1:15,]$word,
+        col ="red", main ="Most frequent words in Social Justice at Grinnell College",
+        ylab = "Word frequencies")
+```
