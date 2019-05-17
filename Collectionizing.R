@@ -23,33 +23,50 @@ library(tidyverse)
 library(stringr)
 
 collections <- c("Social Gospel", #34
-  "Scholarship at Grinnell",
-  "Student Scholarship",
-  "Faculty Scholarship",
-  "Syllabi and Curricular Materials",
-  "Early College History",
-  "G.W. Cook Correspondence",
-  "Grinnell College Buildings",
-  "Historic Iowa Postcards",
-  "Jimmy Ley Collection",
-  "Kleinschmidt Architectural History",
-  "Life at Grinnell College",
-  "Social Gospel",
-  "Grinnell College Geology Collection",
-  "Visualizing Abolition and Freedom",
-  "Ancient Coins",
-  "Social Justice at Grinnell",
-  "Poweshiek History Preservation Project")
+                 "Scholarship at Grinnell", #1
+                 "Student Scholarship", #94
+                 "Faculty Scholarship", #85
+                 "Syllabi and Curricular Materials", #0
+                 "Early College History", #49
+                 "G.W. Cook", #0
+                 "Buildings", #47
+                 "Postcards", #6
+                 "Ley", #0
+                 "Kleinschmidt", #57
+                 "Life at Grinnell College", #386
+                 "Geology", #0
+                 "Abolition and Freedom", #0
+                 "Coins", #0
+                 "Social Justice at Grinnell", #49
+                 "Poweshiek History Preservation Project" #1983
+                 )
 
 
 temp <- data.frame()
 
 getCol<-function(str){
-  temp <- metadata[grep(collections[1], metadata$item),]
+  temp <- metadata[grep(collections[2], metadata$item),]
 }
+
+temp.social <- metadata[grep(collections[1], metadata$item),]
+temp.scholar <- metadata[grep(collections[2], metadata$item),]
+temp.sscholar <- metadata[grep(collections[3], metadata$item),]
+temp.fscholar <- metadata[grep(collections[4], metadata$item),]
+temp.syllabi <- metadata[grep(collections[5], metadata$item),]
+temp.early <- metadata[grep(collections[6], metadata$item),]
+temp.cook <- metadata[grep(collections[7], metadata$item),]
+temp.build <- metadata[grep(collections[8], metadata$item),]
+temp.postcards <- metadata[grep(collections[9], metadata$item),]
+temp.ley <- metadata[grep(collections[10], metadata$item),]
+temp.klein <- metadata[grep(collections[11], metadata$item),]
+temp.life <- metadata[grep(collections[12], metadata$item),]
+temp.geology <- metadata[grep(collections[13], metadata$item),]
+temp.abolition <- metadata[grep(collections[14], metadata$item),]
+temp.coins <- metadata[grep(collections[15], metadata$item),]
+temp.justice <- metadata[grep(collections[16], metadata$item),]
+temp.history <- metadata[grep(collections[17], metadata$item),]
 
 getColSize<-function(str){
   temp <- metadata[grep(collections[1], metadata$item),]
   length(temp)
 }
-
