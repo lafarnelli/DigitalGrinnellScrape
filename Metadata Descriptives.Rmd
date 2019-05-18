@@ -1,0 +1,49 @@
+---
+title: "Metadata Descriptives"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Publisher
+
+```{r}
+length(unique(metadata$publisher))
+```
+
+There are 883 unique Publishers, so it's not just Grinnell College!
+
+#Resource
+
+```{r}
+length(unique(metadata$resource))
+```
+
+There are 36 kinds of resource types represented in the collections.
+
+```{r}
+length(unique(metadata$resource))
+summary(metadata$resource)
+```
+
+We will need to do some cleaning of this variable for it to be usable. 
+
+#Geo
+
+```{r}
+length(unique(metadata$geo))
+summary(metadata$geo)
+```
+
+An overwhelmning number of these are from Grinnell, IA. 
+A great deal of them are NA's. This variable isn't yet ready for use in analysis. 
+
+#Date
+
+```{r}
+summary(metadata$date)
+```
+
+We can use this to make the date into a categorical variable for wordclouds, etc. 
