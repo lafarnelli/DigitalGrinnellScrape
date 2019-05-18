@@ -1,25 +1,11 @@
-library(tidyverse)      # data manipulation & plotting
-library(stringr)        # text cleaning and regular expressions
-library(tidytext)
-library(dplyr)
-library(tibble)
-library(magrittr)
-library(tokenizers)
-library(qdap)
-library(tm)
-library(wordcloud)
-library(plotrix)
-library(dendextend)
-library(ggplot2)
-library(ggthemes)
-library(RWeka)
-library(topicmodels) #load topic models library
-#install.packages("tidyverse")
-#install.packages("stringr")
-#install.packages("tidytext")
-#install.packages("dplyr")
 
-metadata <- read.csv("file:///C:/Users/ohhakyun/Downloads/metadata.csv")
+#install.packages("tm")
+#install.packages("topicmodels") #load topic models library
+
+library(tm)
+library(topicmodels) #load topic models library
+
+metadata <- metadata
 
 #create a corpus from the vector
 docs <- Corpus(VectorSource(as.character(metadata$Description)))
@@ -84,8 +70,6 @@ dtm=dtm[raw.sum!=0,]#remove those rows
 
 #Run LDA using Gibbs sampling
 ldaOut <-LDA(dtm,k, method="Gibbs", control=list(nstart=nstart, seed = seed, best=best, burnin = burnin, iter = iter, thin=thin))
-
-#---------------------------------------running above rn-------------------------------#
 
 #top 6 terms in each topic
 ldaOut.terms <- as.matrix(terms(ldaOut,20))
