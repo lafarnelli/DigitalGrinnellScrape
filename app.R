@@ -1,3 +1,4 @@
+
 #install.packages("dplyr")
 #install.packages("ggplot2")
 #install.packages("readr")
@@ -36,15 +37,20 @@ library(readxl)
 library(stats)
 library(markdown)
 
+#For deciding date cutoffs: 
+#summary(metadata$date)
+#>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#>   -225    1914    1950    1938    1988    2019    2542 
+
 #import cleaned dataset
 data <- metadata #requires that you downloaded metadata and imported it as a dataset
 #data <- read.csv("metadata.csv") #requires that the file is saved in the same folder as app.R
 
 #Key:
-#first <- 1840-1900
-#second <- 1901-1950
-#third <- 1951-2000
-#fourth <- 2001-2019
+#first <- -225-1914
+#second <- 1915-1950
+#third <- 1951-1988
+#fourth <- 1989-2019
 
 #-------------------------------------------------------------------------------------------------------------------#
 #                                         DATA WRANGLING & CLEANING                                                 #
@@ -52,10 +58,10 @@ data <- metadata #requires that you downloaded metadata and imported it as a dat
 
 #faceting date into four time periods according to above Key 
 as.integer(data$date)
-first <- data %>% filter(between(date, 1840, 1900))
-second <- data %>% filter(between(date, 1901, 1950))
-third <- data %>% filter(between(date, 1951, 2000))
-fourth <- data %>% filter(between(date, 2001, 2019))
+first <- data %>% filter(between(date, -255, 1914))
+second <- data %>% filter(between(date, 1915, 1950))
+third <- data %>% filter(between(date, 1951, 1988))
+fourth <- data %>% filter(between(date, 1989, 2019))
 
 #cleaning date data
 first <- first["topic"]
@@ -85,7 +91,7 @@ dateranges <<- list("1840-1900" = first, "1901-1950" = second, "1951-2000" = thi
 
 #cache results to recall again faster
 getTermMatrix <- memoise(function(daterange) {
-
+  
   #remove prepositions, punctuation, etc.
   myCorpus = Corpus(VectorSource(daterange))
   myCorpus = tm_map(myCorpus, content_transformer(tolower))
