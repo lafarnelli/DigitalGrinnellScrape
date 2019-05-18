@@ -8,7 +8,6 @@ output: html_document
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-
 ```{r load the data, echo=FALSE, warning=FALSE, message=FALSE}
 #install.packages("tm")
 #install.packages("SnowballC")
@@ -18,7 +17,7 @@ knitr::opts_chunk$set(echo = FALSE)
 #install.packages("readr")
 #install.packages("webshot")
 #install.packages("htmlwidgets")
-#webshot::install_phantomjs()
+
 library(tm)
 library(SnowballC)
 library(wordcloud)
@@ -27,6 +26,8 @@ library(RColorBrewer)
 library(readr)
 library(webshot)
 library(htmlwidgets)
+
+#webshot::install_phantomjs()
 
 metadata <- read_csv("metadata.csv", col_types = cols(
   x = "i", # integer column
@@ -177,7 +178,7 @@ docs_date4 <- tm_map(docs_date4, removeWords, c("the"))
 dtm_date4 <- TermDocumentMatrix(docs_date4)
 m_date4 <- as.matrix(dtm_date4)
 v_date4 <- sort(rowSums(m_date4),decreasing=TRUE)
-d_date4 <- data.frame(word = names(v_date4),freq=v_date4)
+d_date4 <- data.frame(word = names(v_date4),freq=v_date4)[-1,]
 
 date4_word <- wordcloud2(d_date4, size = 1, minSize = 3, color = c("red", "lightgrey", "black", "maroon")) + WCtheme(2)
 saveWidget(date4_word, "tmp.html", selfcontained = F)
