@@ -87,7 +87,7 @@ is.character(data$topic)
 data$topic <- as.character(data$topic, mode = "list")
 
 #creating dropdown list of time periods
-dateranges <<- list("1840-1900" = first, "1901-1950" = second, "1951-2000" = third, "2001-2019" = fourth)
+dateranges <<- list("225BC-1914" = first, "1915-1950" = second, "1951-1988" = third, "1989-2019" = fourth)
 
 #cache results to recall again faster
 getTermMatrix <- memoise(function(daterange) {
