@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ```{r load the data, echo=FALSE, warning=FALSE, message=FALSE}
+
 #install.packages("tm")
 #install.packages("SnowballC")
 #install.packages("wordcloud")
@@ -18,14 +19,16 @@ knitr::opts_chunk$set(echo = FALSE)
 #install.packages("readr")
 #install.packages("webshot")
 #install.packages("htmlwidgets")
+library(webshot)
+#webshot::install_phantomjs()
 library(tm)
 library(SnowballC)
 library(wordcloud)
 library(wordcloud2)
 library(RColorBrewer)
 library(readr)
-library(webshot)
 library(htmlwidgets)
+
 
 metadata <- read_csv("metadata.csv", col_types = cols(
   x = "i", # integer column
@@ -155,12 +158,12 @@ docs_sscholar <- tm_map(docs_sscholar, removePunctuation)
 docs_sscholar <- tm_map(docs_sscholar, stripWhitespace)
 # Remove english common stopwords
 docs_sscholar <- tm_map(docs_sscholar, removeWords, stopwords("english"))
-docs_sscholar <- tm_map(docs_sscholar, removeWords, c("the", " the", "the "))
 
 dtm_sscholar <- TermDocumentMatrix(docs_sscholar)
 m_sscholar <- as.matrix(dtm_sscholar)
 v_sscholar <- sort(rowSums(m_sscholar),decreasing=TRUE)
-d_sscholar <- data.frame(word = names(v_sscholar),freq=v_sscholar)
+d_sscholar <- data.frame(word = names(v_sscholar),freq=v_sscholar)[-1,]
+
 
 sscholar_word <- wordcloud2(d_sscholar, size = 2, minSize = 3, color = c("red", "lightgrey", "black", "maroon")) + WCtheme(2)
 saveWidget(sscholar_word, "tmp.html", selfcontained = F)
@@ -192,12 +195,11 @@ docs_fscholar <- tm_map(docs_fscholar, removePunctuation)
 docs_fscholar <- tm_map(docs_fscholar, stripWhitespace)
 # Remove english common stopwords
 docs_fscholar <- tm_map(docs_fscholar, removeWords, stopwords("english"))
-docs_fscholar <- tm_map(docs_fscholar, removeWords, c("the", " the", "the "))
 
 dtm_fscholar <- TermDocumentMatrix(docs_fscholar)
 m_fscholar <- as.matrix(dtm_fscholar)
 v_fscholar <- sort(rowSums(m_fscholar),decreasing=TRUE)
-d_fscholar <- data.frame(word = names(v_fscholar),freq=v_fscholar)
+d_fscholar <- data.frame(word = names(v_fscholar),freq=v_fscholar)[-1,]
 
 fscholar_word <- wordcloud2(d_fscholar, size = 2, minSize = 3, color = c("red", "lightgrey", "black", "maroon")) + WCtheme(2)
 saveWidget(fscholar_word, "tmp.html", selfcontained = F)
@@ -340,12 +342,11 @@ docs_justice <- tm_map(docs_justice, removePunctuation)
 docs_justice <- tm_map(docs_justice, stripWhitespace)
 # Remove english common stopwords
 docs_justice <- tm_map(docs_justice, removeWords, stopwords("english"))
-docs_justice <- tm_map(docs_justice, removeWords, c("the", " the", "the "))
 
 dtm_justice <- TermDocumentMatrix(docs_justice)
 m_justice <- as.matrix(dtm_justice)
 v_justice <- sort(rowSums(m_justice),decreasing=TRUE)
-d_justice <- data.frame(word = names(v_justice),freq=v_justice)
+d_justice <- data.frame(word = names(v_justice),freq=v_justice)[-1,]
 
 justice_word <- wordcloud2(d_justice, size = 1, minSize = 3, color = c("red", "lightgrey", "black", "maroon")) + WCtheme(2)
 saveWidget(justice_word, "tmp.html", selfcontained = F)
