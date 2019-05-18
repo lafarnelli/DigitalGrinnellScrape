@@ -199,7 +199,7 @@ docs_fscholar <- tm_map(docs_fscholar, removeWords, stopwords("english"))
 dtm_fscholar <- TermDocumentMatrix(docs_fscholar)
 m_fscholar <- as.matrix(dtm_fscholar)
 v_fscholar <- sort(rowSums(m_fscholar),decreasing=TRUE)
-d_fscholar <- data.frame(word = names(v_fscholar),freq=v_fscholar)[-1,]
+d_fscholar <- data.frame(word = names(v_fscholar),freq=v_fscholar)
 
 fscholar_word <- wordcloud2(d_fscholar, size = 2, minSize = 3, color = c("red", "lightgrey", "black", "maroon")) + WCtheme(2)
 saveWidget(fscholar_word, "tmp.html", selfcontained = F)
