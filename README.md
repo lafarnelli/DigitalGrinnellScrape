@@ -1,5 +1,7 @@
 # DigitalGrinnellScrape : STA-230 Final Project
 
+### For Results See: variables_comparison.html, collections_comparison.html, dates_comparison.html
+
 #### LaAnna Farnelli, Emma Foulkes & Judy Oh
 
 Our project explores and describes the contents of Digital Grinnell, a relatively new platform that features historical materials from College's collections of art, specimens, texts, photography, and other media. Digital Grinnell can be found in its current state at https://digital.grinnell.edu/. Since the library staff have not yet finished digitizing all of the collections they deem relevant for inclusion in Digital Grinnell, the site itself is an incomplete/in-progress data source--but that means our project sets a useful precedent for future projects on the evolving website. 
