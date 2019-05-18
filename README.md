@@ -27,6 +27,6 @@ Our data is almost entirely categorical (with the exception of the variable Inde
 
 ### Modeling
 
-##### model.R
+##### model.R; LDAGibbs 3 TopicsToTerms.csv
 
 This stage of analysis provided an opportunity for the "research" requirement of the assignment, as we learned about LDA in order to cluster the language from the College's object descriptions into a few "topics."
