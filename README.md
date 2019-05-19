@@ -23,7 +23,7 @@ At various points we do string manipulations to subset our data by collection an
 
 ##### app.R; Collections Comparison.Rmd; Dates Comparison.Rmd; Variables Comparison.Rmd
 
-Our data is almost entirely categorical (with the exception of the variable Index Date, which describes the date of an object's creation), and dealing with textual information, so we incorporate several wordclouds assessing different levels and facets of the collections, as well as barplots comparing frequencies of objects across collections and frequencies of topics/themes across objects. 
+Our data is almost entirely categorical and textual, so we incorporate several wordclouds assessing different levels and facets of the collections, as well as barplots comparing frequencies of objects across collections and frequencies of topics/themes across objects. 
 
 ### Modeling
 
