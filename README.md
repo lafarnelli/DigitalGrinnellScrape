@@ -1,6 +1,6 @@
 # DigitalGrinnellScrape : STA-230 Final Project
 
-### For Results See: variables_comparison.html, collections_comparison.html, dates_comparison.html
+### For Results See: Final Paper.pdf, variables_comparison.html, collections_comparison.html, dates_comparison.html, app.R
 
 #### LaAnna Farnelli, Emma Foulkes & Judy Oh
 
@@ -29,4 +29,4 @@ Our data is almost entirely categorical (with the exception of the variable Inde
 
 ##### model.R; LDAGibbs 3 TopicsToTerms.csv
 
-This stage of analysis provided an opportunity for the "research" requirement of the assignment, as we learned about LDA in order to cluster the language from the College's object descriptions into a few "topics."
+Our implementation of a Latent Dirichlent Allocation model with Gibbs sampling on our data. Output gives the highest-probability words for each of the underlying "topics" the model found within Descriptions of items. 
