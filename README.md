@@ -8,7 +8,7 @@ Our project explores and describes the contents of Digital Grinnell, a relativel
 
 #### Research Objectives:
 
-We use R for web scraping, data cleaning, text mining, modelling, and data visualization in order to discover and share important trends, themes, and relationships within the DG collections and interpret from those findings some of the institution's values.
+We use R for web scraping, data cleaning, text mining, modelling, and data visualization in order to discover and share important trends, themes, and relationships within the archival language of Digital Grinnell and interpret from those findings some of the institution's values.
 
 #### Our tasks (and associated items in this repository) fall into the following categories:
 
